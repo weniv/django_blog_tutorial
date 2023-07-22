@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Toast Editor 2.0.0과 의존성 -->
+    <link
+        rel="stylesheet"
+        href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"
+    />
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="table">
+            {{form}}
+            <tr>
+                <th><label for="id_tags">Tags:</label></th>
+                <td><input type="text" name="tags_str" id="id_tags_str"></td>
+            </tr>
+            <tr>
+                <th><label for="id_content_editor">Content_editor:</label></th>
+                <td><div id="editor"></div></td>
+            </tr>
+        </table>
+        <button type="submit" id="submitbtn">제출</button>
+    </form>
+    <script>
+        const Editor = toastui.Editor;
+
+        const editor = new Editor({
+            el: document.querySelector("#editor"),
+            height: "600px",
+            initialEditType: "markdown",
+            previewStyle: "vertical",
+        });
+
+        // editor.getHTML()
+        // editor.getMarkdown()
+        document.getElementById('submitbtn').addEventListener('click', function(){
+            const markdownContent = editor.getMarkdown();
+            document.getElementById('id_content').value = markdownContent;
+        });
+    </script>
+</body>
+</html>

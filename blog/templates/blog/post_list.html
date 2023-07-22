@@ -1,0 +1,51 @@
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+    <h1>blog</h1>
+    <input type="text" name="q" id="search-input">
+    <button id="search-btn">검색</button>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </nav>
+    <main id="main">
+        {% if post_list.exists %}
+        {% for post in post_list %}
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content | truncatewords:45 }}</p>
+            <p>{{ post.created_at }}</p>
+            <p>by {{ post.author }}</p>
+        {% endfor %}
+        {% else %}
+            <p>아직 게시물이 없습니다.</p>
+        {% endif %}
+    </main>
+    <aside>
+        <h2>카테고리</h2>
+        <ul>
+            <!-- post_set은 필드명_set 으로 이해하셔야 합니다. 그래서 구글에서 post_set으로 검색해도 아무것도 안나올거에요. category에 post라는 필드가 있고, 그 해당 category 레코드에 연결된 post 레코드들이 여럿있겠죠. post_set은 그 post 레코드들을 의미합니다.  -->
+            {% for category in category_list %}
+            <li><a href="{{ category.get_absolute_url }}">{{ category.name }} {{ category.post_set.count }}</a></li>
+            {% endfor %}
+        </ul>
+    </aside>
+    <script>
+        document.querySelector('#search-btn').addEventListener('click', () => {
+            const searchInput = document.querySelector('#search-input');
+            const searchValue = searchInput.value;
+            location.href = `/blog/?q=${searchValue}`;
+        });
+    </script>
+</body>
+</html>

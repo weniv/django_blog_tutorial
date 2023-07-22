@@ -1,0 +1,6 @@
+<h1>index</h1>
+{% if user.is_authenticated %}
+    <p>{{ user }}</p>
+{% else %}
+    <p>로그인하세요</p>
+{% endif %}

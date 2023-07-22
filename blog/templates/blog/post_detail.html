@@ -1,0 +1,85 @@
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <!-- fontawesome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <h1>detail</h1>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </nav>
+    <main id="main">
+    <p>{{ post.title }}</p>
+    <p>{{ post.content }}</p>
+    {% if post.head_image %}
+    <img src="{{ post.head_image.url }}" alt="" srcset="">
+    {% endif %}
+    {% if post.file_upload %}
+    <a href="{{ post.head_image.url }}" alt="" srcset="">
+    Download:
+        {% if post.get_file_ext == 'csv' %}
+            <i class="fas fa-file-csv"></i>
+        {% elif post.get_file_ext == 'pdf' %}
+            <i class="fas fa-file-pdf"></i>
+        {% elif post.get_file_ext == 'zip' %}
+            <i class="fas fa-file-archive"></i>
+        {% elif post.get_file_ext == 'jpg' %}
+            <i class="fas fa-file-image"></i>
+        {% elif post.get_file_ext == 'png' %}
+            <i class="fas fa-file-image"></i>
+        {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
+            <i class="fas fa-file-word"></i>
+        {% elif post.get_file_ext == 'pptx' or post.get_file_ext == 'ppt' %}
+            <i class="fas fa-file-powerpoint"></i>
+        {% elif post.get_file_ext == 'xls' %}
+            <i class="fas fa-file-excel"></i>
+        {% elif post.get_file_ext == 'mp3' %}
+            <i class="fas fa-file-audio"></i>
+        {% elif post.get_file_ext == 'mp4' %}
+            <i class="fas fa-file-video"></i>
+        {% else %}
+            <i class="fas fa-file"></i>
+        {% endif %}
+        {{ post.file_upload.name }}
+    {% endif %}
+    <p>{{ post.created_at }}</p>
+    <p>by {{ post.author }}</p>
+    {% if post.comment_set.exists %}
+        <h2>댓글</h2>
+        {% for comment in post.comment_set.all %}
+            <p>{{ comment.content }}</p>
+            <p>{{ comment.created_at }}</p>
+            <p>by {{ comment.author }}</p>
+            {% if user.is_authenticated and comment.author == user %}
+            <a role="button" href="/blog/update_comment/{{comment.pk}}">edit</a>
+            <a role="button" href="/blog/delete_comment/{{comment.pk}}">delete</a>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>아직 댓글이 없습니다.</p>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <p>로그인 되었습니다.</p>
+    <form id="comment-form" action="{{post.get_absolute_url}}new_comment/" method="post">
+        {% csrf_token %}
+        {{comment_form.as_p}}
+        <button type="submit">작성</button>
+    </form>
+    {% else %}
+    <p>로그인이 필요합니다.</p>
+    {% endif %}
+    </main>
+
+</body>
+</html>
