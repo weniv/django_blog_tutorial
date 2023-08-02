@@ -11,3 +11,7 @@ class CustomUserAdmin(UserAdmin):
         ('권한', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         ('로그인정보', {'fields': ('last_login', 'date_joined')}),
     ]
+    add_fieldsets = [
+        ('프로필', {'fields': ('username', 'email', 'nickname', 'password1', 'password2')}),
+    ]
+    list_display = ('username', 'email', 'nickname', 'is_staff')

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>이 파일은 Django와 독립적으로 움직입니다.</h1>
+    <div id="data"></div>
+    <script>
+        // http://127.0.0.1:8000/test/ 에서 json으로 된 데이터를 id="data"에 fetch로 넣어주는 코드
+        fetch('http://127.0.0.1:8000/test/')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            document.getElementById('data').innerHTML = data;
+        });
+    </script>
+</body>
+</html>

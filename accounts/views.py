@@ -4,6 +4,27 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.conf import settings
+from rest_framework import generics, status
+from .serializers import RegisterSerializer
+from .models import User
+from .serializers import LoginSerializer
+from rest_framework.response import Response
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+
+class LoginViewDrf(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True) # 유효성 검사
+        token = serializer.validated_data
+        return Response({
+            'token': token.key,
+        }, status=status.HTTP_200_OK)
 
 
 signup = CreateView.as_view(

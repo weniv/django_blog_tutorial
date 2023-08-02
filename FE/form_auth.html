@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form test</title>
+</head>
+<body>
+    <input type="text" name="username" placeholder="사용자 이름">
+    <input type="password" name="password" placeholder="패스워드">
+    <button id="login">로그인</button>
+    <br>
+    <input type="text" id="title" name="title" placeholder="제목">
+    <input type="text" id="content" name="content" placeholder="내용">
+    <input type="text" id="author" name="author" placeholder="내용">
+    <button id="submit">제출</button>
+
+    <script>
+        // login 버튼 클릭시 토큰 받아옴
+        const loginBtn = document.querySelector('#login');
+        const submitBtn = document.querySelector('#submit');
+
+        loginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let username = document.getElementsByName('username')[0].value;
+            let password = document.getElementsByName('password')[0].value;
+            let data = {
+                username: username,
+                password: password
+            }
+            // fetch로 http://127.0.0.1:8000/accounts/logindrf/에 post로 전송
+            fetch('http://127.0.0.1:8000/accounts/logindrf/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).then(function(response){
+                return response.json();
+            }).then(function(data){
+                console.log(data);
+                // 로컬 스토리지에 token 저장
+                localStorage.setItem('token', data.token);
+            });
+        });
+
+        // 받아온 토큰 사용하여 form 내용 전송
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const title = document.querySelector('#title').value;
+            const content = document.querySelector('#content').value;
+            const author = document.querySelector('#author').value;
+            const token = localStorage.getItem('token');
+            if (token) {
+                let reqData = {
+                    title: title,
+                    content: content,
+                    author: author
+                }
+                // fetch로 데이터 전송
+                fetch('http://127.0.0.1:8000/blog/list/', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify(reqData),
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    console.log(data);
+                });
+            } else {
+                alert('로그인이 필요합니다.');
+            }
+        })
+    </script>
+</body>
+</html>

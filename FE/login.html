@@ -1,0 +1,35 @@
+<html>
+<head>
+    <title>login test</title>
+</head>
+<body>
+    <input type="text" name="username" placeholder="사용자 이름">
+    <input type="password" name="password" placeholder="패스워드">
+    <button>로그인</button>
+    <script>
+        // 버튼 클릭시
+        let btnSubmit = document.querySelector('button');
+        btnSubmit.addEventListener('click', (e) => {
+            e.preventDefault();
+            let username = document.getElementsByName('username')[0].value;
+            let password = document.getElementsByName('password')[0].value;
+            let data = {
+                username: username,
+                password: password
+            }
+            // fetch로 http://127.0.0.1:8000/accounts/logindrf/에 post로 전송
+            fetch('http://127.0.0.1:8000/accounts/logindrf/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).then(function(response){
+                return response.json();
+            }).then(function(data){
+                console.log(data);
+            });
+        });
+    </script>
+</body>
+</html>
